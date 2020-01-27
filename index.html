@@ -1,0 +1,100 @@
+<html>
+<head>
+<script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+<link rel="stylesheet" type="text/css" href="./css/style.css">
+<script src='.//scripts/script.js'></script>
+</head>
+<body>
+  <div id='form'>
+    <form>
+      <div>
+        <p>Введите имя</p>
+        <input type='text' name='name' >
+      </div>
+      <div>
+        <p>Введите номер телефона</p>
+        <input type='tel' id='phone' name='phone' placeholder="8XXXXXXXXXX" >
+      </div>
+      <div>
+        <p>Введите e-mail</p>
+        <input type='email' id='email' name='email' placeholder='example@mail.ru'>
+      </div>
+      <div>
+        <p>Введите сообщение</p>
+        <input type='text' name='message' class='message'>
+      </div>
+    </form>
+    <div id='btn'>
+    <p class='p_btn'>Отправить</p>
+    </div>
+  </div>
+  <div id='message'>
+  </div>
+  <div id='message_email'>
+  </div>
+  <div id='thx'>
+    <div>
+      <h1 id='h1'>Ваша заявка приянта!</h1>
+      <h1 id='h2'>Проверьте правильность ввода данных</h1>
+    </div>
+    <div id='ok'>
+      <p class='p_btn'>OK</p>
+    </div>
+  </div>
+  <script>
+  function Callback(data) {
+    $('body').css({'background': 'rgba(0,0,0,.5)'});
+    $('#thx').css({'display': 'block'});
+    $('#form').css({'display': 'none'});
+    if (data['phone'] && data['email_send'] && data['email_send']){
+      $('#h1').css({'display': 'block'});
+    }
+    else  {
+      $('#h2').css({'display': 'block'});
+    }
+  }
+  $('#btn').on('click', function(){
+    if (ValidMail() && ValidPhone()) {
+      var data_for_ajax = {
+        'name': $('input[name=name]').val(),
+        'phone': $('input[name=phone]').val(),
+        'email': $('input[name=email]').val(),
+        'message': $('input[name=message]').val()
+      }
+      $.post( "./ajax.php", data_for_ajax, Callback, 'json');
+    }
+    else if (!ValidMail()) {
+      $('#email').css({'outline': '2px solid #ff0000fa'});
+    }
+    else if (!ValidPhone()){
+      $('#phone').css({'outline': '2px solid #ff0000fa'});
+    }
+    else {
+      $('#email').css({'outline': '2px solid #ff0000fa'});
+      $('#phone').css({'outline': '2px solid #ff0000fa'});
+    }
+  });
+  $('#phone').on("input", function(){
+    if (ValidPhone()) {
+      $('#phone').css({'outline': '2px solid #4CAF50'});
+    }
+    else {
+      $('#phone').css({'outline': '2px solid #ff0000fa'});
+    }
+  });
+  $('#email').on("input", function(){
+    if (ValidMail()) {
+      $('#email').css({'outline': '2px solid #4CAF50'});
+    }
+    else {
+      $('#email').css({'outline': '2px solid #ff0000fa'});
+    }
+  });
+  $('#ok').on('click', function(){
+    $('#thx').css({'display': 'none'});
+    $('body').css({'background': 'rgba(0,0,0,0)'});
+    $('#form').css({'display': 'block'});
+  });
+  </script>
+</body>
+</html>
